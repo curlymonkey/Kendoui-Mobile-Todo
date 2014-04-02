@@ -13,7 +13,8 @@ define([
             })
         }).promise();
     };
-
+    
+    //TODO: Stop calling cat service EVERY time. 
     var getDefaultCat = function (target) {
         return $.Deferred(function (dfd) {
             var defaultCat = localStorage.getItem("defaultCat");

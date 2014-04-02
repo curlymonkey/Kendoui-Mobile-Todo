@@ -8,7 +8,7 @@ define([
     categories: new catDataSrc(),
     title: 'Title',
     onCategorySelect : function(e) {
-        var cat = { id: e.data.id, name: e.data.name };
+        var cat = { Id: e.data.Id, name: e.data.name };
         localStorage.setItem("defaultCategory", JSON.stringify(cat));
     }
   };

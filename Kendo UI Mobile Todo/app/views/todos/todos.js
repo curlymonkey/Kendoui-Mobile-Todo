@@ -8,6 +8,8 @@ define([
     var view;
     var navbar;
     var category;
+    var catDataSrc = new CatDataSrc();
+    var fetchedCats = false;
 
     var todoModel = {
         id: 'Id',
@@ -45,16 +47,26 @@ define([
             dir: 'desc'
         }
     });
-
+    
+    var fetchMeMaybe = function(cb) {
+        if(!fetchedCats) {
+            fetchedCats = true;
+            catDataSrc.fetch(cb);
+        } else {
+            cb();
+        }
+    }
+    
+    // TODO: Stop calling cat endpoint EVERY time here, please ;-)
     var findCategory = function (id) {
         return $.Deferred(function(dfd) {
             if(!id) {
                 dfd.resolve(app.defaults.category);
             } else {
-                var ds = new CatDataSrc({}, { field: "Id", operator: "eq", value: id });
-                ds.fetch(function() {
-                    dfd.resolve(this.view()[0]);
-                })
+                fetchMeMaybe(function() {
+                    catDataSrc.filter({ field: "Id", operator: "eq", value: id });
+                		dfd.resolve(catDataSrc.view()[0]);
+                });
             }
         }).promise();
     };
@@ -67,12 +79,17 @@ define([
         init: function (e) {
             navbar = e.view.header.find('.km-navbar').data('kendoMobileNavBar');
         },
+        show: function(e) {
+            this.loader.show();
+        },
         afterShow: function (e) {
+            var self = this;
             findCategory(e.view.params.category).then(function(category) {
+                self.loader.hide();
 				todosDataSource.filter({
-                    field: 'category',
+                    field: 'Category',
                     operator: 'eq',
-                    value: category.id
+                    value: category.Id
                 });
                 navbar.title(category.name);                
             });
@@ -88,4 +105,7 @@ define([
         });
     });
 
+    $.subscribe('/newCategory/add', function(e) {
+        catDataSrc.fetch();
+    });
 });
