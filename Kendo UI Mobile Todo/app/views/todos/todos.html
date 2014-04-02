@@ -1,0 +1,14 @@
+<div data-role="view" id="todos" data-model="APP.todos.model" data-init="APP.todos.events.init" data-after-show="APP.todos.events.afterShow" style="display: none;">
+  <header data-role="header">
+    <div data-role="navbar">
+      <a data-role="button" data-rel="drawer" href="#categories" data-icon="drawer-button" data-align="left"></a>
+      <span data-role="view-title"></span>
+      <a data-role="button" data-rel="modalview" href="#newTodo" data-align="right" data-icon="compose"></a>
+    </div>
+  </header>
+  <ul data-role="listview" data-bind="source: todos" data-template="todos-template"></ul>
+</div>
+
+<script type="text/x-kendo-template" id="todos-template">
+  <a href="">#: title #</a>
+</script>
