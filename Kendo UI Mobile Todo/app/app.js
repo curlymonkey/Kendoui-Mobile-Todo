@@ -1,6 +1,8 @@
 define([
-    'settings'
-], function (settings) {
+    'settings',
+    'datasources/categoriesDataSource',
+    'datasources/todosDataSource'
+], function (settings, CatDataSrc, TodosDataSource) {
     var loadUI = function () {
         return $.Deferred(function (dfd) {
             require([
@@ -51,6 +53,10 @@ define([
                     initialView: 'todos'
                 });
             });
+        },
+        data : {
+            categories: new CatDataSrc(),
+            todos: new TodosDataSource()
         }
     };
 

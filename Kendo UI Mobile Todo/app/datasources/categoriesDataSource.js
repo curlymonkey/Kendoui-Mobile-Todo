@@ -23,7 +23,7 @@ define([], function () {
             }
         };
         
-		return new kendo.data.DataSource({
+		var ds = new kendo.data.DataSource({
             type: 'everlive',
             schema: {
               model: catModel
@@ -33,6 +33,11 @@ define([], function () {
             },
             sort: sort || { field: 'Name', dir: 'desc' },
             filter: filter || {}
-    	});    
+    	});   
+        
+        $.subscribe('/newCategory/add', function(e) {
+            ds.fetch();
+        });
+        return ds;
     }
 });

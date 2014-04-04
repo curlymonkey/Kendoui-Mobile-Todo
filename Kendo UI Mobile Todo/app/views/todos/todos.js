@@ -1,78 +1,37 @@
 define([
     'views/view',
     'text!views/todos/todos.html',
-    'app',
-    'views/categories/categoriesDataSource'
-], function (View, html, app, CatDataSrc) {
+    'app'
+], function (View, html, app) {
 
     var view;
     var navbar;
     var category;
-    var catDataSrc = new CatDataSrc();
-    var fetchedCats = false;
-
-    var todoModel = {
-        id: 'Id',
-        fields: {
-            title: {
-                field: 'Title',
-                defaultValue: ''
-            },
-            createdAt: {
-                field: 'CreatedAt',
-                defaultValue: new Date()
-            },
-            category: {
-                field: 'category',
-                defaultValue: null
-            },
-            userId: {
-                field: 'UserId',
-                defaultValue: null
-            }
-        }
-    };
-
-    var todosDataSource = new kendo.data.DataSource({
-        type: 'everlive',
-        schema: {
-            model: todoModel
-        },
-        transport: {
-            // Required by Everlive
-            typeName: 'Todos'
-        },
-        sort: {
-            field: 'CreatedAt',
-            dir: 'desc'
-        }
-    });
-    
+    var fetchedCats = false;    
     var fetchMeMaybe = function(cb) {
         if(!fetchedCats) {
             fetchedCats = true;
-            catDataSrc.fetch(cb);
+            app.data.categories.fetch(cb);
         } else {
             cb();
         }
-    }
+    };
     
-    // TODO: Stop calling cat endpoint EVERY time here, please ;-)
     var findCategory = function (id) {
         return $.Deferred(function(dfd) {
             if(!id) {
                 dfd.resolve(app.defaults.category);
             } else {
                 fetchMeMaybe(function() {
-                    catDataSrc.filter({ field: "Id", operator: "eq", value: id });
-                		dfd.resolve(catDataSrc.view()[0]);
+                    app.data.categories.filter({ field: "Id", operator: "eq", value: id });
+                		dfd.resolve(app.data.categories.view()[0]);
                 });
             }
         }).promise();
     };
 
     var model = kendo.observable({
-        todos: todosDataSource
+        todos: app.data.todos
     });
 
     var events = {
@@ -86,7 +45,7 @@ define([
             var self = this;
             findCategory(e.view.params.category).then(function(category) {
                 self.loader.hide();
-				todosDataSource.filter({
+				model.todos.filter({
                     field: 'Category',
                     operator: 'eq',
                     value: category.Id
@@ -97,15 +56,4 @@ define([
     };
 
     view = new View('todos', html, model, events);
-
-    $.subscribe('/newTodo/add', function (e, text) {
-        todos.add({
-            title: text,
-            category: category
-        });
-    });
-
-    $.subscribe('/newCategory/add', function(e) {
-        catDataSrc.fetch();
-    });
 });
