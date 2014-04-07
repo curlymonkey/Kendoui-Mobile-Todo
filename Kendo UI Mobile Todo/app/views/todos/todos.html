@@ -6,9 +6,9 @@
       <a data-role="button" data-rel="modalview" href="#newTodo" data-align="right" data-icon="compose"></a>
     </div>
   </header>
-  <ul data-role="listview" data-bind="source: todos" data-template="todos-template"></ul>
+  <ul data-role="listview" data-style="inset" data-bind="source: todos" data-template="todos-template"></ul>
 </div>
 
 <script type="text/x-kendo-template" id="todos-template">
-  <a href="">#: title #</a>
+  #: title #<a class="todo-close" data-bind="click: removeTodo"><i class="fa fa-check-square-o fa-lg"></i></a>
 </script>

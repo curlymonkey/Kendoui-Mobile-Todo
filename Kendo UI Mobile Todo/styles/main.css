@@ -22,3 +22,8 @@ textarea {
 { 
   content: "\E077"; 
 }
+
+.todo-close {
+    position:absolute;
+    right: 0.6em;
+}

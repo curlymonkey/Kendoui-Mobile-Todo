@@ -3,15 +3,14 @@ define([
     'text!views/todos/todos.html',
     'app'
 ], function (View, html, app) {
-
-    var view;
+    
     var navbar;
     var category;
-    var fetchedCats = false;    
-    var fetchMeMaybe = function(cb) {
-        if(!fetchedCats) {
-            fetchedCats = true;
-            app.data.categories.fetch(cb);
+    var fetched = {};
+    var fetchMeMaybe = function(type, cb) {
+        if(!fetched[type]) {
+            fetched[type] = true;
+            app.data[type].fetch(cb);
         } else {
             cb();
         }
@@ -22,7 +21,7 @@ define([
             if(!id) {
                 dfd.resolve(app.defaults.category);
             } else {
-                fetchMeMaybe(function() {
+                fetchMeMaybe("categories", function() {
                     app.data.categories.filter({ field: "Id", operator: "eq", value: id });
                 		dfd.resolve(app.data.categories.view()[0]);
                 });
@@ -31,7 +30,11 @@ define([
     };
 
     var model = kendo.observable({
-        todos: app.data.todos
+        todos: app.data.todos,
+        removeTodo: function(e) {
+            this.todos.remove(e.data);
+            this.todos.sync();	
+        }
     });
 
     var events = {
@@ -43,17 +46,19 @@ define([
         },
         afterShow: function (e) {
             var self = this;
-            findCategory(e.view.params.category).then(function(category) {
-                self.loader.hide();
-				model.todos.filter({
-                    field: 'Category',
-                    operator: 'eq',
-                    value: category.Id
+            fetchMeMaybe("todos", function() {
+                findCategory(e.view.params.category).then(function(category) {
+                    self.loader.hide();
+                    model.todos.filter({
+                        field: 'category',
+                        operator: 'eq',
+                        value: category.id
+                    });
+                    navbar.title(category.name);                
                 });
-                navbar.title(category.name);                
-            });
+            });    
         }
     };
 
-    view = new View('todos', html, model, events);
+    return new View('todos', html, model, events);
 });

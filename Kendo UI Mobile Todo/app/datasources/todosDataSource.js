@@ -15,7 +15,7 @@ define([], function () {
                     defaultValue: new Date()
                 },
                 category: {
-                    field: 'category',
+                    field: 'Category',
                     defaultValue: null
                 },
                 userId: {
@@ -42,8 +42,9 @@ define([], function () {
         $.subscribe('/newTodo/add', function (e, text) {
             todos.add({
                 title: text,
-                category: category.Id
+                category: category.id
             });
+            todos.sync();
         });
         
         $.subscribe("/category/selected", function (e, cat) {

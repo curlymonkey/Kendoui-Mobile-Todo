@@ -10,17 +10,15 @@ define([
         beforeShow: function() {
             app.data.categories.filter([]);
         },
-        onCategorySelect: function (e) {
-            var cat = {
-                Id: e.data.Id,
-                name: e.data.name
-            };
-            localStorage.setItem("defaultCategory", JSON.stringify(cat));
-            $.publish("/category/selected", [ cat ]);
+        onCategorySelect : function(e) {
+            var cat = { id: e.data.id, name: e.data.name };
+            localStorage.setItem("defaultCat", JSON.stringify(cat));
+            $.publish('/category/selected', [ cat ]);
+            APP.instance.navigate('todos?category=' + e.data.Id);
         }
     };
 
-    var view = new View('categories', html, model);
+    return new View('categories', html, model);
 
     $.subscribe('/newCategory/add', function (e, text) {
         var cat = model.categories.add({

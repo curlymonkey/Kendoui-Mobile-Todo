@@ -21,16 +21,14 @@ define([
         return $.Deferred(function (dfd) {
             var defaultCat = localStorage.getItem("defaultCat");
             if (!defaultCat) {
-                require(['views/categories/categoriesDataSource'], function (CatDataSrc) {
-                    var cats = new CatDataSrc({}, {
-                        field: "IsDefault",
-                        operator: "eq",
-                        value: true
-                    });
-                    cats.fetch(function () {
-                        localStorage.setItem("defaultCat", JSON.stringify(this.data()[0]));
-                        dfd.resolve(this.data()[0]);
-                    });
+                var cats = new CatDataSrc({}, {
+                    field: "IsDefault",
+                    operator: "eq",
+                    value: true
+                });
+                cats.fetch(function () {
+                    localStorage.setItem("defaultCat", JSON.stringify(this.data()[0]));
+                    dfd.resolve(this.data()[0]);
                 });
             } else {
                 dfd.resolve(JSON.parse(defaultCat));
@@ -48,6 +46,7 @@ define([
             });
             $.when(loadUI(), getDefaultCat()).then(function (nil, cat) {
                 self.defaults.category = cat;
+            	$.publish('/category/selected', [ cat ]);
                 self.instance = new kendo.mobile.Application(document.body, {
                     skin: 'flat',
                     initialView: 'todos'
