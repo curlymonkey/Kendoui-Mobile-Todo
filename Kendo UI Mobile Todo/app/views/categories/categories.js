@@ -7,9 +7,6 @@ define([
     var model = {
         categories: app.data.categories,
         title: 'Title',
-        beforeShow: function() {
-            app.data.categories.filter([]);
-        },
         onCategorySelect : function(e) {
             var cat = { id: e.data.id, name: e.data.name };
             localStorage.setItem("defaultCat", JSON.stringify(cat));
@@ -17,8 +14,14 @@ define([
             APP.instance.navigate('todos?category=' + e.data.Id);
         }
     };
+    
+    var events = {
+        beforeShow: function() {
+            app.data.categories.filter([]);
+        }
+    };
 
-    return new View('categories', html, model);
+    return new View('categories', html, model, events);
 
     $.subscribe('/newCategory/add', function (e, text) {
         var cat = model.categories.add({

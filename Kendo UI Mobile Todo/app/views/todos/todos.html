@@ -1,4 +1,4 @@
-<div data-role="view" id="todos" data-model="APP.todos.model" data-init="APP.todos.events.init" data-after-show="APP.todos.events.afterShow" style="display: none;">
+<div data-role="view" id="todos" data-model="APP.todos.model" data-init="APP.todos.events.init" data-after-show="APP.todos.events.afterShow">
   <header data-role="header">
     <div data-role="navbar">
       <a data-role="button" data-rel="drawer" href="#categories" data-icon="drawer-button" data-align="left"></a>
@@ -6,7 +6,7 @@
       <a data-role="button" data-rel="modalview" href="#newTodo" data-align="right" data-icon="compose"></a>
     </div>
   </header>
-  <ul data-role="listview" data-style="inset" data-bind="source: todos" data-template="todos-template"></ul>
+  <ul data-role="listview" data-style="inset" data-bind="source: todos" data-template="todos-template" data-pull-to-refresh="true"></ul>
 </div>
 
 <script type="text/x-kendo-template" id="todos-template">
