@@ -48,7 +48,7 @@ define([
             	$.publish('/category/selected', [ cat ]);
                 self.instance = new kendo.mobile.Application(document.body, {
                     skin: 'flat',
-                    initialView: 'todos'
+                    initial: 'todos'
                 });
             });
         },
